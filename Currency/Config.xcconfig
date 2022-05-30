@@ -1,0 +1,11 @@
+//
+//  Config.xcconfig
+//  Currency
+//
+//  Created by kuanwei on 2022/5/29.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+API_KEY = your_api_key
