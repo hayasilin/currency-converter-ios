@@ -35,7 +35,7 @@ final class MockCurrencyPersistenceConfiguration: CurrencyPersistenceConfigurati
     }()
 
     private static func createManagedObjectModel() -> NSManagedObjectModel? {
-        let bundle = Bundle(for: CurrencyPersistence.self)
+        let bundle = Bundle.main
         let url = bundle.url(forResource: coreDataModel.name, withExtension: coreDataModel.extension)
         return url.flatMap(NSManagedObjectModel.init)
     }

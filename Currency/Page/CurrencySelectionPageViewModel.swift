@@ -28,8 +28,23 @@ struct CurrencySelectionPageViewModel {
         self.userDefaultsUseCase = userDefaultsUseCase
     }
 
-    func fetchCurrencyInfo(with source: String, completion: ((Error?) -> Void)?) {
-        fetchCurrencyLiveInfo(with: source, completion: completion)
+    func fetchCurrencyLiveInfo(with source: String, completion: ((Error?) -> Void)?) {
+        // TODO: Use Combine
+        if userDefaultsUseCase.isCachedCurrencyInfoValid(type: .live) {
+            fetchCurrencyLiveInfoForDisplay(with: source)
+            fetchCurrencyList(completion: completion)
+        } else {
+            requestCurrencyLiveInfo { error in
+                if let error = error {
+                    completion?(error)
+                } else {
+                    fetchCurrencyLiveInfoForDisplay(with: source)
+                    setCurrencyLiveInfoUpdateDate()
+                    fetchCurrencyList(completion: completion)
+                    completion?(nil)
+                }
+            }
+        }
     }
 
     func fetchCurrencyLiveInfoForDisplay(with source: String) {
@@ -51,25 +66,6 @@ struct CurrencySelectionPageViewModel {
     }
 
     // MARK: Private
-
-    private func fetchCurrencyLiveInfo(with source: String, completion: ((Error?) -> Void)?) {
-        // TODO: Use Combine
-        if userDefaultsUseCase.isCachedCurrencyInfoValid(type: .live) {
-            fetchCurrencyLiveInfoForDisplay(with: source)
-            fetchCurrencyList(completion: completion)
-        } else {
-            requestCurrencyLiveInfo { error in
-                if let error = error {
-                    completion?(error)
-                } else {
-                    fetchCurrencyLiveInfoForDisplay(with: source)
-                    setCurrencyLiveInfoUpdateDate()
-                    fetchCurrencyList(completion: completion)
-                    completion?(nil)
-                }
-            }
-        }
-    }
 
     private func fetchCurrencyList(completion: ((Error?) -> Void)?) {
         if userDefaultsUseCase.isCachedCurrencyInfoValid(type: .list) {
@@ -117,7 +113,7 @@ struct CurrencySelectionPageViewModel {
                     }
                 }
             case .failure(let error):
-                print(error)
+                completion?(error)
             }
         }
     }

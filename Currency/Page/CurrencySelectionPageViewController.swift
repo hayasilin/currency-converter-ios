@@ -71,7 +71,7 @@ final class CurrencySelectionPageViewController: UIViewController {
         setupBindings()
 
         let currencyName = viewModel.lastViewedCurrencyName ?? Config.defaultCurrency
-        viewModel.fetchCurrencyInfo(with: currencyName) { error in
+        viewModel.fetchCurrencyLiveInfo(with: currencyName) { error in
             guard let error = error else {
                 return
             }

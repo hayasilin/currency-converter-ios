@@ -59,16 +59,13 @@ class ManagedCurrencyListTests: XCTestCase {
             XCTFail()
         }
     }
+}
 
+extension ManagedCurrencyListTests {
     private func saveSampleManagedCurrencyList() throws {
         do {
             let currencyList = ManagedCurrencyList(context: persistence.viewContext)
-            currencyList.currencies = [
-                "TWD": "New Taiwan Dollar",
-                "JPY": "Japanese Yen",
-                "KRW": "South Korean Won"
-            ]
-
+            currencyList.currencies = ManagedCurrencyListSample.currencies
             try persistence.viewContext.save()
         } catch {
             XCTFail()

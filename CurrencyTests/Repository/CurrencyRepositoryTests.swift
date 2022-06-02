@@ -20,8 +20,8 @@ class CurrencyRepositoryTests: XCTestCase {
         sut = CurrencyRepository(persistence: persistence)
 
         do {
-            try saveSampleManagedCurrencyInfo()
-            try saveSampleManagedCurrencyList()
+            try insertSampleManagedCurrencyLiveInfo()
+            try insertSampleManagedCurrencyList()
         }
         catch {
             XCTFail()
@@ -94,33 +94,25 @@ class CurrencyRepositoryTests: XCTestCase {
 
         wait(for: [expectation], timeout: 1)
     }
+}
 
-    private func saveSampleManagedCurrencyList() throws {
+extension CurrencyRepositoryTests {
+    private func insertSampleManagedCurrencyList() throws {
         do {
             let managedCurrencyList = ManagedCurrencyList(context: persistence.viewContext)
-            managedCurrencyList.currencies = [
-                "TWD": "New Taiwan Dollar",
-                "JPY": "Japanese Yen",
-                "KRW": "South Korean Won"
-            ]
-
+            managedCurrencyList.currencies = ManagedCurrencyListSample.currencies
             try persistence.viewContext.save()
         } catch {
             XCTFail()
         }
     }
 
-    private func saveSampleManagedCurrencyInfo() throws {
+    private func insertSampleManagedCurrencyLiveInfo() throws {
         do {
             let managedCurrencyInfo = ManagedCurrencyLiveInfo(context: persistence.viewContext)
-            managedCurrencyInfo.source = "USD"
-            managedCurrencyInfo.time = Date(timeIntervalSince1970: 1653466323)
-            managedCurrencyInfo.quotes = [
-                "USDTWD": 29.533499,
-                "USDJPY": 127.047034,
-                "USDKRW": 1264.370525
-            ]
-
+            managedCurrencyInfo.source = ManagedCurrencyLiveInfoSample.USDLiveInfo.source
+            managedCurrencyInfo.time = ManagedCurrencyLiveInfoSample.USDLiveInfo.time
+            managedCurrencyInfo.quotes = ManagedCurrencyLiveInfoSample.USDLiveInfo.quotes
             try persistence.viewContext.save()
         } catch {
             XCTFail()

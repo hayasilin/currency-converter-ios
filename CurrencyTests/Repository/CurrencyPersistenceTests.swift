@@ -17,7 +17,7 @@ class CurrencyPersistenceTests: XCTestCase {
         sut = CurrencyPersistence(persistenceConfiguration: MockCurrencyPersistenceConfiguration())
 
         do {
-            try saveSampleManagedCurrencyInfo()
+            try insertSampleManagedCurrencyLiveInfo()
         }
         catch {
             XCTFail()
@@ -26,13 +26,8 @@ class CurrencyPersistenceTests: XCTestCase {
 
     override func tearDown() {
         do {
-            let fetchRequest = ManagedCurrencyLiveInfo.fetchRequest()
-            let currencyInfos = try sut.viewContext.fetch(fetchRequest)
-
-            for currencyInfo in currencyInfos {
-                sut.viewContext.delete(currencyInfo)
-            }
-            try sut.viewContext.save()
+            let changes = try ManagedCurrencyLiveInfo.clear(in: sut.viewContext)
+            XCTAssertNotNil(changes)
         }
         catch {
             XCTFail()
@@ -197,16 +192,11 @@ class CurrencyPersistenceTests: XCTestCase {
 }
 
 extension CurrencyPersistenceTests {
-    private func saveSampleManagedCurrencyInfo() throws {
+    private func insertSampleManagedCurrencyLiveInfo() throws {
         let managedCurrencyInfo = ManagedCurrencyLiveInfo(context: sut.viewContext)
-        managedCurrencyInfo.source = "USD"
-        managedCurrencyInfo.time = Date(timeIntervalSince1970: 1653466323)
-        managedCurrencyInfo.quotes = [
-            "USDTWD": 29.533499,
-            "USDJPY": 127.047034,
-            "USDKRW": 1264.370525
-        ]
-
+        managedCurrencyInfo.source = ManagedCurrencyLiveInfoSample.USDLiveInfo.source
+        managedCurrencyInfo.time = ManagedCurrencyLiveInfoSample.USDLiveInfo.time
+        managedCurrencyInfo.quotes = ManagedCurrencyLiveInfoSample.USDLiveInfo.quotes
         sut.saveViewContext()
     }
 }

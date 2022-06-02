@@ -17,7 +17,7 @@ class ManagedCurrencyLiveInfoTests: XCTestCase {
         persistence = MockCurrencyPersistence.shared
 
         do {
-            try saveSampleManagedCurrencyInfo()
+            try insertSampleManagedCurrencyLiveInfo()
         }
         catch {
             XCTFail()
@@ -79,18 +79,15 @@ class ManagedCurrencyLiveInfoTests: XCTestCase {
             XCTFail()
         }
     }
+}
 
-    private func saveSampleManagedCurrencyInfo() throws {
+extension ManagedCurrencyLiveInfoTests {
+    private func insertSampleManagedCurrencyLiveInfo() throws {
         do {
             let managedCurrencyInfo = ManagedCurrencyLiveInfo(context: persistence.viewContext)
-            managedCurrencyInfo.source = "USD"
-            managedCurrencyInfo.time = Date(timeIntervalSince1970: 1653466323)
-            managedCurrencyInfo.quotes = [
-                "USDTWD": 29.533499,
-                "USDJPY": 127.047034,
-                "USDKRW": 1264.370525
-            ]
-
+            managedCurrencyInfo.source = ManagedCurrencyLiveInfoSample.USDLiveInfo.source
+            managedCurrencyInfo.time = ManagedCurrencyLiveInfoSample.USDLiveInfo.time
+            managedCurrencyInfo.quotes = ManagedCurrencyLiveInfoSample.USDLiveInfo.quotes
             try persistence.viewContext.save()
         } catch {
             XCTFail()
